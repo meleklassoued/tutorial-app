@@ -7,6 +7,8 @@ import {
   json,
   redirect,
 } from "@remix-run/node";
+import React from "react";
+
 // loader
 export const loader = async ({ params }: LoaderFunctionArgs) => {
   invariant(params.contactId, "Missing contactId param");
@@ -16,17 +18,18 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
   }
   return json({ contact });
 };
+
 // action
 export const action = async ({ params, request }: ActionFunctionArgs) => {
   invariant(params.contactId, "Missing contactId param");
   const formData = await request.formData();
   const updates = Object.fromEntries(formData);
+  console.log(updates);
   await updateContact(params.contactId, updates);
-  return null;
+  return redirect(`/contacts/${params.contactId}`);
 };
 export default function EditContact() {
   const { contact } = useLoaderData<typeof loader>();
-
   return (
     <Form id="contact-form" method="post">
       <p>
